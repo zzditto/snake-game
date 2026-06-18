@@ -16,7 +16,7 @@
       class="hud-pause"
       @click="$emit('pause')"
     >
-      暂停
+      {{ isPaused ? '继续' : '暂停' }}
     </button>
   </div>
 </template>
@@ -26,6 +26,7 @@ defineProps<{
   score: number;
   length: number;
   islandName: string;
+  isPaused?: boolean;
 }>();
 defineEmits<{ pause: [] }>();
 </script>

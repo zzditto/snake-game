@@ -4,6 +4,7 @@
       :score="score"
       :length="snakeLength"
       :island-name="islandName"
+      :is-paused="pausedVisible"
       @pause="togglePause"
     />
     <div class="canvas-area">
@@ -17,6 +18,11 @@
         @score-change="(v) => score = v"
       />
     </div>
+    <PauseModal
+      :visible="pausedVisible"
+      @resume="resumeGame"
+      @home="goHome"
+    />
     <GameOverModal
       :visible="gameOverVisible"
       :score="finalScore"
@@ -40,6 +46,7 @@ import { useRoute, useRouter } from 'vue-router';
 import GameCanvas from '@/components/GameCanvas.vue';
 import GameHUD from '@/components/GameHUD.vue';
 import GameOverModal from '@/components/GameOverModal.vue';
+import PauseModal from '@/components/PauseModal.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useProgressStore } from '@/stores/progress';
 import type { IslandId, ModeId, AchievementId, TitleId } from '@/game/types';
@@ -78,6 +85,8 @@ const dateStr = computed(() => {
 
 const accentColor = computed(() => ISLANDS[island]?.theme?.accent ?? '#19c8b9');
 const bgColor = computed(() => ISLANDS[island]?.theme?.grassA ?? '#f8f8f0');
+
+const pausedVisible = ref(false);
 
 const audioRef = ref<AudioManager | null>(null);
 provide('audio', audioRef);
@@ -130,7 +139,17 @@ function onEat(_payload: { foodKind: string; snakeLength: number }) {
 }
 
 function togglePause() {
-  canvasRef.value?.pause();
+  if (pausedVisible.value) {
+    resumeGame();
+  } else {
+    canvasRef.value?.pause();
+    pausedVisible.value = true;
+  }
+}
+
+function resumeGame() {
+  pausedVisible.value = false;
+  canvasRef.value?.resume();
 }
 
 function retry() {
