@@ -1,7 +1,7 @@
 import type { GameState, ThemeTokens } from '@/game/types';
 import { drawGrassLayer } from '@/game/render/layers/GrassLayer';
 import { drawFoodLayer } from '@/game/render/layers/FoodLayer';
-import { drawSnakeLayer } from '@/game/render/layers/SnakeLayer';
+import { drawSnakeLayer, type SnakeLayerOptions } from '@/game/render/layers/SnakeLayer';
 import { drawEffectsLayer } from '@/game/render/layers/EffectsLayer';
 import { drawObstacleLayer } from '@/game/render/layers/ObstacleLayer';
 
@@ -12,6 +12,7 @@ export class Renderer {
   private cellH = 0;
   private boardSize: number;
   private theme: ThemeTokens;
+  private snakeDeathStart: number | null = null;
 
   constructor(container: HTMLElement, boardSize: number, theme: ThemeTokens) {
     this.boardSize = boardSize;
@@ -42,12 +43,30 @@ export class Renderer {
     this.drawGrass();
   }
 
-  draw(state: GameState, _alpha: number): void {
+  draw(state: GameState, alpha: number): void {
+    const now = Date.now();
+    const animTime = (now - state.startedAt) / 1000;
+
+    if (!state.snake.alive && this.snakeDeathStart === null) {
+      this.snakeDeathStart = now;
+    } else if (state.snake.alive) {
+      this.snakeDeathStart = null;
+    }
+    const deathTime = this.snakeDeathStart !== null
+      ? (now - this.snakeDeathStart) / 1000
+      : 0;
+
     drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH);
     drawObstacleLayer(this.ctx('obstacle'), state.obstacles, this.cellW, this.cellH);
     drawSnakeLayer(
       this.ctx('snake'), state.snake, this.cellW, this.cellH,
-      this.theme.snakeHead, this.theme.snakeBodyEnd,
+      {
+        alpha,
+        animTime,
+        isDead: !state.snake.alive,
+        deathTime,
+        theme: this.theme,
+      } satisfies SnakeLayerOptions,
     );
     drawEffectsLayer(this.ctx('effects'));
   }
