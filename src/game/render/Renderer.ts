@@ -16,7 +16,8 @@ export class Renderer {
   constructor(container: HTMLElement, boardSize: number, theme: ThemeTokens) {
     this.boardSize = boardSize;
     this.theme = theme;
-    this.resize(container.clientWidth, container.clientHeight);
+    this.cellW = Math.min(container.clientWidth, boardSize * 64) / boardSize;
+    this.cellH = this.cellW;
     for (const name of ['grass', 'food', 'obstacle', 'snake', 'effects'] as const) {
       const canvas = document.createElement('canvas');
       canvas.style.position = 'absolute';
