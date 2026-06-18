@@ -1,5 +1,5 @@
 .superpowers/
-.opencode/
+#.opencode/
 .codegraph/
 node_modules/
 dist/
