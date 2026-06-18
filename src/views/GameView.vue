@@ -19,7 +19,10 @@
         @score-change="(v) => score = v"
       />
     </div>
-    <DPad @dir="onDir" @pause="togglePause" />
+    <DPad
+      @dir="onDir"
+      @pause="togglePause"
+    />
     <PauseModal
       :visible="pausedVisible"
       @resume="resumeGame"

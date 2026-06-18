@@ -1,5 +1,8 @@
 <template>
-  <LoadingScreen :visible="loadingVisible" :progress="loadingProgress" />
+  <LoadingScreen
+    :visible="loadingVisible"
+    :progress="loadingProgress"
+  />
   <RouterView />
 </template>
 

@@ -1,10 +1,24 @@
 <template>
-  <div v-if="visible" class="overlay" @click.self="$emit('resume')">
+  <div
+    v-if="visible"
+    class="overlay"
+    @click.self="$emit('resume')"
+  >
     <div class="modal">
       <h2>游戏暂停</h2>
       <div class="actions">
-        <button class="btn-primary" @click="$emit('resume')">继续</button>
-        <button class="btn-secondary" @click="$emit('home')">返回主菜单</button>
+        <button
+          class="btn-primary"
+          @click="$emit('resume')"
+        >
+          继续
+        </button>
+        <button
+          class="btn-secondary"
+          @click="$emit('home')"
+        >
+          返回主菜单
+        </button>
       </div>
     </div>
   </div>

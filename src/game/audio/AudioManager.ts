@@ -49,7 +49,7 @@ export class AudioManager {
   }
 
   loadAllSfx(): void {
-    for (const [key, howl] of this.sfxMap) howl.unload();
+    for (const [, howl] of this.sfxMap) howl.unload();
     this.sfxMap.clear();
     this.sfxBaseVolume.clear();
     this.sfxLoadedCount = 0;

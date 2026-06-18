@@ -1,11 +1,19 @@
 <template>
   <Transition name="fade">
-    <div v-if="visible" class="loading-screen">
+    <div
+      v-if="visible"
+      class="loading-screen"
+    >
       <div class="loading-content">
         <div class="spinner" />
-        <p class="loading-text">动森贪吃蛇</p>
+        <p class="loading-text">
+          动森贪吃蛇
+        </p>
         <div class="progress-bar">
-          <div class="progress-fill" :style="{ width: progress + '%' }" />
+          <div
+            class="progress-fill"
+            :style="{ width: progress + '%' }"
+          />
         </div>
       </div>
     </div>

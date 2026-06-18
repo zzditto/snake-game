@@ -25,11 +25,11 @@
         <label>BGM</label>
         <input
           :value="settings.bgmVolume"
-          @input="settings.setBgmVolume(Number(($event.target as HTMLInputElement).value))"
           type="range"
           min="0"
           max="100"
           class="slider"
+          @input="settings.setBgmVolume(Number(($event.target as HTMLInputElement).value))"
         >
         <span class="slider-val">{{ settings.bgmVolume }}</span>
       </div>
@@ -37,11 +37,11 @@
         <label>SFX</label>
         <input
           :value="settings.sfxVolume"
-          @input="settings.setSfxVolume(Number(($event.target as HTMLInputElement).value))"
           type="range"
           min="0"
           max="100"
           class="slider"
+          @input="settings.setSfxVolume(Number(($event.target as HTMLInputElement).value))"
         >
         <span class="slider-val">{{ settings.sfxVolume }}</span>
       </div>

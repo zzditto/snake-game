@@ -1,15 +1,45 @@
 <template>
   <div class="dpad">
     <div class="dpad-row">
-      <button class="dpad-btn" @touchstart.prevent="$emit('dir', 'up')" @mousedown.prevent="$emit('dir', 'up')">▲</button>
+      <button
+        class="dpad-btn"
+        @touchstart.prevent="$emit('dir', 'up')"
+        @mousedown.prevent="$emit('dir', 'up')"
+      >
+        ▲
+      </button>
     </div>
     <div class="dpad-row mid-row">
-      <button class="dpad-btn" @touchstart.prevent="$emit('dir', 'left')" @mousedown.prevent="$emit('dir', 'left')">◀</button>
-      <button class="dpad-btn pause-btn" @touchstart.prevent="$emit('pause')" @mousedown.prevent="$emit('pause')">⏸</button>
-      <button class="dpad-btn" @touchstart.prevent="$emit('dir', 'right')" @mousedown.prevent="$emit('dir', 'right')">▶</button>
+      <button
+        class="dpad-btn"
+        @touchstart.prevent="$emit('dir', 'left')"
+        @mousedown.prevent="$emit('dir', 'left')"
+      >
+        ◀
+      </button>
+      <button
+        class="dpad-btn pause-btn"
+        @touchstart.prevent="$emit('pause')"
+        @mousedown.prevent="$emit('pause')"
+      >
+        ⏸
+      </button>
+      <button
+        class="dpad-btn"
+        @touchstart.prevent="$emit('dir', 'right')"
+        @mousedown.prevent="$emit('dir', 'right')"
+      >
+        ▶
+      </button>
     </div>
     <div class="dpad-row">
-      <button class="dpad-btn" @touchstart.prevent="$emit('dir', 'down')" @mousedown.prevent="$emit('dir', 'down')">▼</button>
+      <button
+        class="dpad-btn"
+        @touchstart.prevent="$emit('dir', 'down')"
+        @mousedown.prevent="$emit('dir', 'down')"
+      >
+        ▼
+      </button>
     </div>
   </div>
 </template>
