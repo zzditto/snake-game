@@ -6,14 +6,20 @@ const STORAGE_KEY = 'snake-game.settings';
 
 interface SettingsState {
   difficulty: DifficultyId;
+  bgmVolume: number;
+  sfxVolume: number;
 }
 
 function load(): SettingsState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as SettingsState;
+    if (raw) return { ...defaults(), ...JSON.parse(raw) as Partial<SettingsState> };
   } catch { /* ignore */ }
-  return { difficulty: 'normal' };
+  return defaults();
+}
+
+function defaults(): SettingsState {
+  return { difficulty: 'normal', bgmVolume: 70, sfxVolume: 70 };
 }
 
 function save(state: SettingsState): void {

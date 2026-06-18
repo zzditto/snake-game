@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, provide } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import GameCanvas from '@/components/GameCanvas.vue';
 import GameHUD from '@/components/GameHUD.vue';
@@ -45,6 +45,7 @@ import { useProgressStore } from '@/stores/progress';
 import type { IslandId, ModeId, AchievementId, TitleId } from '@/game/types';
 import { ACHIEVEMENT_NAMES, TITLE_NAMES } from '@/game/types';
 import { ISLANDS } from '@/game/levels/islands';
+import { AudioManager } from '@/game/audio/AudioManager';
 
 const route = useRoute();
 const router = useRouter();
@@ -77,6 +78,24 @@ const dateStr = computed(() => {
 
 const accentColor = computed(() => ISLANDS[island]?.theme?.accent ?? '#19c8b9');
 const bgColor = computed(() => ISLANDS[island]?.theme?.grassA ?? '#f8f8f0');
+
+const audioRef = ref<AudioManager | null>(null);
+provide('audio', audioRef);
+
+onMounted(() => {
+  const audio = new AudioManager();
+  audio.loadBgm();
+  audio.loadAllSfx();
+  audio.playBgm();
+  if (settings.bgmVolume !== undefined) audio.setBgmVolume(settings.bgmVolume / 100);
+  if (settings.sfxVolume !== undefined) audio.setSfxVolume(settings.sfxVolume / 100);
+  audioRef.value = audio;
+});
+
+onBeforeUnmount(() => {
+  audioRef.value?.destroy();
+  audioRef.value = null;
+});
 
 function onDie(payload: {
   score: number;
