@@ -160,4 +160,13 @@ function goHome() {
   justify-content: center;
   padding: 16px;
 }
+@media (max-width: 600px) {
+  .canvas-area { padding: 4px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .canvas-area {
+    max-height: 80vh;
+    padding: 4px;
+  }
+}
 </style>
