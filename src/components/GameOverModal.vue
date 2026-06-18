@@ -66,12 +66,33 @@ h2 { color: @text-color; margin: 0 0 24px; }
 .actions { display: flex; gap: 12px; margin-top: 24px; justify-content: center; }
 button {
   padding: 10px 28px;
-  border: none;
-  border-radius: 999px;
+  border: 2px solid @primary-color;
+  border-radius: 50px;
   background: @primary-color;
   color: #fff;
   font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  &.secondary { background: @bg-color-secondary; color: @text-color; border: 2px solid @border-color-light; }
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 0 0 #11a89b;
+  transition: all 0.2s;
+  &:hover {
+    background: #3dd4c6;
+    border-color: #3dd4c6;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 0 #11a89b;
+  }
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #11a89b;
+  }
+  &.secondary {
+    background: @bg-color-secondary;
+    border-color: @border-color-light;
+    color: @text-color;
+    box-shadow: 0 4px 0 0 #d4c9b4;
+    &:hover { border-color: @primary-color; color: @primary-color; box-shadow: 0 5px 0 0 #d4c9b4; }
+    &:active { box-shadow: 0 1px 0 0 #d4c9b4; }
+  }
 }
 </style>

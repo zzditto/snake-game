@@ -59,12 +59,25 @@ defineEmits<{ pause: [] }>();
 }
 .hud-pause {
   padding: 6px 20px;
-  border: 2px solid @text-color;
-  border-radius: 999px;
-  background: @bg-color;
-  color: @text-color;
+  border: 2px solid @primary-color;
+  border-radius: 50px;
+  background: @primary-color;
+  color: #fff;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  &:hover { background: @primary-color; color: #fff; border-color: @primary-color; }
+  letter-spacing: 0.02em;
+  box-shadow: 0 3px 0 0 #11a89b;
+  transition: all 0.2s;
+  &:hover {
+    background: #3dd4c6;
+    border-color: #3dd4c6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 0 0 #11a89b;
+  }
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 0 #11a89b;
+  }
 }
 </style>
