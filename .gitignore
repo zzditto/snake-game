@@ -1,2 +1,9 @@
 .superpowers/
 .opencode/
+.codegraph/
+node_modules/
+dist/
+.vite/
+*.log
+.DS_Store
+coverage/
