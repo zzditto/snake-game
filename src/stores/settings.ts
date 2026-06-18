@@ -33,5 +33,7 @@ export const useSettingsStore = defineStore('settings', {
   },
   actions: {
     setDifficulty(d: DifficultyId) { this.difficulty = d; save(this.$state); },
+    setBgmVolume(v: number) { this.bgmVolume = v; save(this.$state); },
+    setSfxVolume(v: number) { this.sfxVolume = v; save(this.$state); },
   },
 });

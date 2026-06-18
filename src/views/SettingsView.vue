@@ -24,24 +24,26 @@
       <div class="slider-row">
         <label>BGM</label>
         <input
-          v-model.number="bgmVolume"
+          :value="settings.bgmVolume"
+          @input="settings.setBgmVolume(Number(($event.target as HTMLInputElement).value))"
           type="range"
           min="0"
           max="100"
           class="slider"
         >
-        <span class="slider-val">{{ bgmVolume }}</span>
+        <span class="slider-val">{{ settings.bgmVolume }}</span>
       </div>
       <div class="slider-row">
         <label>SFX</label>
         <input
-          v-model.number="sfxVolume"
+          :value="settings.sfxVolume"
+          @input="settings.setSfxVolume(Number(($event.target as HTMLInputElement).value))"
           type="range"
           min="0"
           max="100"
           class="slider"
         >
-        <span class="slider-val">{{ sfxVolume }}</span>
+        <span class="slider-val">{{ settings.sfxVolume }}</span>
       </div>
     </section>
 
@@ -55,7 +57,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import type { DifficultyId } from '@/game/types';
 import { useSettingsStore } from '@/stores/settings';
@@ -68,9 +69,6 @@ const difficulties: { id: DifficultyId; label: string }[] = [
   { id: 'normal', label: '慢跑' },
   { id: 'hard', label: '狂奔' },
 ];
-
-const bgmVolume = ref(50);
-const sfxVolume = ref(70);
 
 function goBack() {
   router.push({ name: 'home' });
