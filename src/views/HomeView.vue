@@ -29,6 +29,12 @@
     <div class="footer-links">
       <button
         class="link-btn"
+        @click="goDex"
+      >
+        图鉴
+      </button>
+      <button
+        class="link-btn"
         @click="goSettings"
       >
         设置
@@ -55,6 +61,8 @@ function startFree() {
 function startDaily() {
   router.push({ name: 'game', params: { island: selectedIsland.value }, query: { mode: 'daily' } });
 }
+
+function goDex() { router.push({ name: 'dex' }); }
 
 function goSettings() {
   router.push({ name: 'settings' });

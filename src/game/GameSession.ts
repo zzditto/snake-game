@@ -1,6 +1,6 @@
 import type {
-  Cell, Dir, GameMode, GameState, Island,
-  DifficultyId, SnakeState,
+  Cell, Dir, GameMode, GameState, Island, IslandId,
+  DifficultyId, SnakeState, Food, ModeId, AchievementId, TitleId, FoodKind,
 } from '@/game/types';
 import {
   TICK_MS_BY_DIFFICULTY, SPEED_UP_EVERY, SPEED_UP_FACTOR,
@@ -15,6 +15,7 @@ import {
 import { spawnFood, isExpired } from '@/game/core/Food';
 import { GameLoop } from '@/game/core/GameLoop';
 import { EventBus, type GameEvents } from '@/game/core/EventBus';
+import { generateObstacles } from '@/game/core/Obstacle';
 
 export interface GameSessionOptions {
   island: Island;
@@ -22,6 +23,14 @@ export interface GameSessionOptions {
   difficulty: DifficultyId;
   boardSize: number;
   maxFoodsOnBoard?: number;
+  onEat?: (food: Food, snakeLength: number) => void;
+  onDie?: (payload: { score: number; length: number; island: IslandId; mode: ModeId }) => void;
+  onUnlockAchievement?: (id: AchievementId) => void;
+  onUnlockTitle?: (id: TitleId) => void;
+  onUnlockIsland?: (id: IslandId) => void;
+  onDexFossil?: (kind: FoodKind) => void;
+  onDexFruit?: (kind: FoodKind) => void;
+  onMeteorEaten?: () => void;
 }
 
 export class GameSession {
@@ -35,8 +44,10 @@ export class GameSession {
   private loop: GameLoop;
   private maxFoods: number;
   private destroyed = false;
+  private opts: GameSessionOptions;
 
   constructor(opts: GameSessionOptions) {
+    this.opts = opts;
     this.island = opts.island;
     this.mode = opts.mode;
     this.board = new Board(opts.boardSize);
@@ -73,6 +84,11 @@ export class GameSession {
   start(): void {
     if (this.destroyed) return;
     this.bus.emit('start', { island: this.island.id, mode: this.mode.id });
+    if (this.mode.shouldSpawnObstacles && this.mode.rngSeed !== undefined) {
+      this.state.obstacles = generateObstacles(
+        this.rng, this.board.size, this.mode.obstacleDensity ?? 0, this.state.snake.body,
+      );
+    }
     this.loop.start();
   }
 
@@ -156,6 +172,14 @@ export class GameSession {
       if (food.kind === 'golden') {
         this.state.snake.invincibleUntil = performance.now() + GOLDEN_INVINCIBLE_MS;
       }
+      this.opts.onEat?.(food, this.state.snake.body.length);
+      if (food.kind === 'meteor') {
+        this.opts.onMeteorEaten?.();
+      } else if (FOSSIL_KINDS.includes(food.kind)) {
+        this.opts.onDexFossil?.(food.kind);
+      } else {
+        this.opts.onDexFruit?.(food.kind);
+      }
       this.bus.emit('eat', { food, snakeLength: this.state.snake.body.length });
       this.maybeSpeedUp();
     }
@@ -172,6 +196,12 @@ export class GameSession {
 
   private die(): void {
     killSnake(this.state.snake);
+    this.opts.onDie?.({
+      score: this.state.score,
+      length: this.state.snake.body.length,
+      island: this.state.island,
+      mode: this.state.mode,
+    });
     this.bus.emit('die', {
       score: this.state.score,
       length: this.state.snake.body.length,

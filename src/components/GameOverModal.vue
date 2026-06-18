@@ -15,6 +15,41 @@
           新纪录!
         </p>
       </div>
+
+      <div
+        v-if="newUnlocks.length > 0"
+        class="unlocks"
+      >
+        <p
+          v-for="item in newUnlocks"
+          :key="item"
+          class="unlock-item"
+        >
+          ✨ {{ item }}
+        </p>
+      </div>
+
+      <div
+        v-if="isDaily"
+        class="share-section"
+      >
+        <DailyShareCard
+          ref="shareCardRef"
+          :date-str="dateStr"
+          :score="score"
+          :length="length"
+          :island="island"
+          :accent-color="accentColor"
+          :bg-color="bgColor"
+        />
+        <button
+          class="save-btn"
+          @click="saveImage"
+        >
+          保存图片
+        </button>
+      </div>
+
       <div class="actions">
         <button @click="$emit('retry')">
           再来一局
@@ -31,42 +66,74 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { ref, computed } from 'vue';
+import type { IslandId } from '@/game/types';
+import DailyShareCard from '@/components/DailyShareCard.vue';
+import html2canvas from 'html2canvas';
+
+const props = withDefaults(defineProps<{
   visible: boolean;
   score: number;
   length: number;
   isNewHighScore: boolean;
-}>();
+  mode?: string;
+  island?: IslandId;
+  newUnlocks?: string[];
+  dateStr?: string;
+  accentColor?: string;
+  bgColor?: string;
+}>(), {
+  mode: 'free',
+  island: 'spring',
+  newUnlocks: () => [],
+  dateStr: '',
+  accentColor: '#19c8b9',
+  bgColor: '#f8f8f0',
+});
+
 defineEmits<{ retry: []; home: [] }>();
+
+const shareCardRef = ref<InstanceType<typeof DailyShareCard> | null>(null);
+const isDaily = computed(() => props.mode === 'daily');
+
+async function saveImage() {
+  const el = shareCardRef.value?.cardRef;
+  if (!el) return;
+  const canvas = await html2canvas(el, { scale: 2, useCORS: true });
+  const link = document.createElement('a');
+  link.download = `snake-daily-${props.dateStr || 'challenge'}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+}
 </script>
 
 <style lang="less" scoped>
 @import '@/styles/tokens.less';
 
 .overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 100;
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.4); z-index: 100;
 }
 .modal {
-  background: @bg-color-content;
-  border: 3px solid @text-color;
-  border-radius: 24px;
-  padding: 40px 48px;
-  text-align: center;
-  min-width: 280px;
+  background: @bg-color-content; border: 3px solid @text-color;
+  border-radius: 24px; padding: 40px 48px; text-align: center;
+  min-width: 280px; max-height: 90vh; overflow-y: auto;
 }
 h2 { color: @text-color; margin: 0 0 24px; }
 .stats p { font-size: 16px; color: @text-color-body; margin: 8px 0; }
 .new-record { color: @success-color; font-weight: 700; }
+.unlocks { margin: 16px 0; }
+.unlock-item { font-size: 14px; color: @primary-color; font-weight: 600; margin: 4px 0; }
+.share-section { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 16px 0; }
+.save-btn {
+  padding: 8px 20px; border: 2px solid @primary-color; border-radius: 50px;
+  background: @primary-color; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+  &:hover { background: #3dd4c6; }
+}
 .actions { display: flex; gap: 12px; margin-top: 24px; justify-content: center; }
 button {
-  padding: 10px 28px;
-  border: 2px solid @primary-color;
+  padding: 10px 28px; border: 2px solid @primary-color;
   border-radius: 50px;
   background: @primary-color;
   color: #fff;

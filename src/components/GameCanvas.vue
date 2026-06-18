@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import type { IslandId, ModeId, DifficultyId, Dir } from '@/game/types';
+import type { IslandId, ModeId, DifficultyId, Dir, AchievementId, TitleId } from '@/game/types';
 import { BOARD_SIZE } from '@/game/types';
 import { GameSession } from '@/game/GameSession';
 import { createFreeMode } from '@/game/modes/FreeMode';
@@ -15,6 +15,7 @@ import { createDailyMode } from '@/game/modes/DailyMode';
 import { getIsland } from '@/game/levels/islands';
 import { InputController } from '@/game/core/InputController';
 import { Renderer } from '@/game/render/Renderer';
+import { useProgressStore } from '@/stores/progress';
 
 const props = withDefaults(defineProps<{
   island: IslandId;
@@ -28,7 +29,15 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   scoreChange: [score: number];
-  die: [payload: { score: number; length: number; island: IslandId; mode: ModeId }];
+  die: [payload: {
+    score: number;
+    length: number;
+    island: IslandId;
+    mode: ModeId;
+    newAchievements: string[];
+    newTitles: string[];
+    newIslands: string[];
+  }];
   eat: [payload: { foodKind: string; snakeLength: number }];
 }>();
 
@@ -47,16 +56,29 @@ function initGame(): void {
     ? createFreeMode()
     : createDailyMode();
 
+  const progress = useProgressStore();
+  const newAchievements: string[] = [];
+  const newTitles: string[] = [];
+
   session = new GameSession({
     island,
     mode,
     difficulty: props.difficulty,
     boardSize: BOARD_SIZE,
     maxFoodsOnBoard: 1,
+    onDexFruit: (kind) => { progress.addToDexFruit(kind); },
+    onDexFossil: (kind) => { progress.addToDexFossil(kind); },
+    onMeteorEaten: () => { progress.addMeteorEaten(); },
+    onUnlockAchievement: (id: AchievementId) => {
+      if (progress.unlockAchievement(id)) newAchievements.push(id);
+    },
+    onUnlockTitle: (id: TitleId) => {
+      if (progress.addTitle(id)) newTitles.push(id);
+    },
   });
 
   if (!renderer) {
-    renderer = new Renderer(container, BOARD_SIZE, island.theme, island.decorations);
+    renderer = new Renderer(container, BOARD_SIZE, island.theme, island.decorations, props.island);
   }
 
   session.onRender((alpha, state) => {
@@ -75,7 +97,18 @@ function initGame(): void {
     renderer?.triggerEatParticles(food.cell.x, food.cell.y, p.food.kind);
     emit('eat', { foodKind: p.food.kind, snakeLength: p.snakeLength });
   });
-  session.bus.on('die', (p) => emit('die', p));
+  session.bus.on('die', (p) => {
+    const newIslands = progress.addCumulativeScore(p.score);
+    emit('die', {
+      score: p.score,
+      length: p.length,
+      island: props.island,
+      mode: props.mode,
+      newAchievements,
+      newTitles,
+      newIslands,
+    });
+  });
 
   inputCtrl = new InputController({
     target: document,

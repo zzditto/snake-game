@@ -1,9 +1,10 @@
-import type { DecorationDef, GameState, ThemeTokens } from '@/game/types';
+import type { DecorationDef, GameState, IslandId, ThemeTokens } from '@/game/types';
 import { drawGrassLayer } from '@/game/render/layers/GrassLayer';
 import { drawFoodLayer } from '@/game/render/layers/FoodLayer';
 import { drawSnakeLayer } from '@/game/render/layers/SnakeLayer';
 import { drawEffectsLayer, spawnEatParticles, triggerScreenShake, clearEffects } from '@/game/render/layers/EffectsLayer';
 import { drawObstacleLayer } from '@/game/render/layers/ObstacleLayer';
+import { drawParticleLayer, initParticleLayer } from '@/game/render/layers/ParticleLayer';
 
 export class Renderer {
   private canvases: Record<string, HTMLCanvasElement> = {};
@@ -13,6 +14,7 @@ export class Renderer {
   private boardSize: number;
   private theme: ThemeTokens;
   private decorations: DecorationDef[];
+  private islandId: IslandId;
   private animTime = 0;
   private lastFrameTime = 0;
   private isDead = false;
@@ -24,13 +26,15 @@ export class Renderer {
     boardSize: number,
     theme: ThemeTokens,
     decorations: DecorationDef[],
+    islandId: IslandId,
   ) {
     this.boardSize = boardSize;
     this.theme = theme;
     this.decorations = decorations;
+    this.islandId = islandId;
     this.cellW = Math.min(container.clientWidth, boardSize * 64) / boardSize;
     this.cellH = this.cellW;
-    for (const name of ['grass', 'food', 'obstacle', 'snake', 'effects'] as const) {
+    for (const name of ['grass', 'food', 'obstacle', 'snake', 'effects', 'particle'] as const) {
       const canvas = document.createElement('canvas');
       canvas.style.position = 'absolute';
       canvas.style.inset = '0';
@@ -41,6 +45,7 @@ export class Renderer {
       this.contexts[name] = canvas.getContext('2d')!;
     }
     this.drawGrass();
+    initParticleLayer(islandId);
   }
 
   resize(containerW: number, _containerH: number): void {
@@ -74,6 +79,7 @@ export class Renderer {
       theme: this.theme,
     });
     drawEffectsLayer(this.ctx('effects'), dt);
+    drawParticleLayer(this.ctx('particle'), dt);
   }
 
   triggerDeath(): void {
@@ -92,6 +98,7 @@ export class Renderer {
     this.animTime = 0;
     this.hasTriggeredDeath = false;
     clearEffects();
+    initParticleLayer(this.islandId);
   }
 
   private drawGrass(): void {
