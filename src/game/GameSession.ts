@@ -31,6 +31,7 @@ export interface GameSessionOptions {
   onDexFossil?: (kind: FoodKind) => void;
   onDexFruit?: (kind: FoodKind) => void;
   onMeteorEaten?: () => void;
+  onAutoPause?: () => void;
 }
 
 export class GameSession {
@@ -78,6 +79,7 @@ export class GameSession {
       tickMs: TICK_MS_BY_DIFFICULTY[opts.difficulty],
       update: () => this.tick(),
       render: () => {},
+      onAutoPause: opts.onAutoPause,
     });
   }
 

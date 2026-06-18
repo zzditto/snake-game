@@ -6,9 +6,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch, inject } from 'vue';
+import type { Ref } from 'vue';
 import type { IslandId, ModeId, DifficultyId, Dir, AchievementId, TitleId } from '@/game/types';
-import { BOARD_SIZE } from '@/game/types';
+import { BOARD_SIZE, FOSSIL_KINDS } from '@/game/types';
+import type { AudioManager } from '@/game/audio/AudioManager';
 import { GameSession } from '@/game/GameSession';
 import { createFreeMode } from '@/game/modes/FreeMode';
 import { createDailyMode } from '@/game/modes/DailyMode';
@@ -42,6 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
+const audioRef = inject<Ref<AudioManager | null> | null>('audio', null);
 
 let session: GameSession | null = null;
 let renderer: Renderer | null = null;
@@ -75,6 +78,7 @@ function initGame(): void {
     onUnlockTitle: (id: TitleId) => {
       if (progress.addTitle(id)) newTitles.push(id);
     },
+    onAutoPause: () => { audioRef?.value?.playSfx('pause'); },
   });
 
   if (!renderer) {
@@ -96,6 +100,15 @@ function initGame(): void {
     ) ?? p.food;
     renderer?.triggerEatParticles(food.cell.x, food.cell.y, p.food.kind);
     emit('eat', { foodKind: p.food.kind, snakeLength: p.snakeLength });
+    if (audioRef?.value) {
+      if (FOSSIL_KINDS.includes(p.food.kind)) {
+        audioRef.value.playSfx('eat_fossil');
+      } else if (p.food.kind === 'meteor') {
+        audioRef.value.playSfx('eat_meteor');
+      } else {
+        audioRef.value.playSfx('eat');
+      }
+    }
   });
   session.bus.on('die', (p) => {
     const newIslands = progress.addCumulativeScore(p.score);
@@ -108,6 +121,7 @@ function initGame(): void {
       newTitles,
       newIslands,
     });
+    audioRef?.value?.playSfx('die');
   });
 
   inputCtrl = new InputController({
@@ -136,6 +150,7 @@ function reset(): void {
 
 function pause(): void { session?.pause(); }
 function resume(): void { session?.resume(); }
+function queueDirection(dir: Dir): void { session?.queueDirection(dir); }
 
 watch(() => session?.state.score, (v) => { if (v !== undefined) emit('scoreChange', v); });
 
@@ -145,7 +160,7 @@ onBeforeUnmount(() => {
   inputCtrl?.detach();
 });
 
-defineExpose({ reset, pause, resume });
+defineExpose({ reset, pause, resume, queueDirection });
 </script>
 
 <style lang="less" scoped>

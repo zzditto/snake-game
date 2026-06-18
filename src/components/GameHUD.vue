@@ -16,7 +16,7 @@
       class="hud-pause"
       @click="$emit('pause')"
     >
-      暂停
+      {{ isPaused ? '继续' : '暂停' }}
     </button>
   </div>
 </template>
@@ -26,6 +26,7 @@ defineProps<{
   score: number;
   length: number;
   islandName: string;
+  isPaused?: boolean;
 }>();
 defineEmits<{ pause: [] }>();
 </script>
@@ -79,5 +80,10 @@ defineEmits<{ pause: [] }>();
     transform: translateY(1px);
     box-shadow: 0 1px 0 0 #11a89b;
   }
+}
+@media (max-width: 600px) {
+  .hud { gap: 12px; padding: 8px 12px; }
+  .hud-value { font-size: 16px; }
+  .hud-label { font-size: 10px; }
 }
 </style>

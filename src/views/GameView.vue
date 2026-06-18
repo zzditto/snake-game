@@ -4,9 +4,11 @@
       :score="score"
       :length="snakeLength"
       :island-name="islandName"
+      :is-paused="pausedVisible"
       @pause="togglePause"
     />
     <div class="canvas-area">
+      <SwipeArea @swipe="onSwipe" />
       <GameCanvas
         ref="canvasRef"
         :island="island"
@@ -17,6 +19,15 @@
         @score-change="(v) => score = v"
       />
     </div>
+    <DPad
+      @dir="onDir"
+      @pause="togglePause"
+    />
+    <PauseModal
+      :visible="pausedVisible"
+      @resume="resumeGame"
+      @home="goHome"
+    />
     <GameOverModal
       :visible="gameOverVisible"
       :score="finalScore"
@@ -35,16 +46,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, provide } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import GameCanvas from '@/components/GameCanvas.vue';
 import GameHUD from '@/components/GameHUD.vue';
 import GameOverModal from '@/components/GameOverModal.vue';
+import PauseModal from '@/components/PauseModal.vue';
+import DPad from '@/components/DPad.vue';
+import SwipeArea from '@/components/SwipeArea.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useProgressStore } from '@/stores/progress';
-import type { IslandId, ModeId, AchievementId, TitleId } from '@/game/types';
+import type { IslandId, ModeId, AchievementId, TitleId, Dir } from '@/game/types';
 import { ACHIEVEMENT_NAMES, TITLE_NAMES } from '@/game/types';
 import { ISLANDS } from '@/game/levels/islands';
+import { AudioManager } from '@/game/audio/AudioManager';
 
 const route = useRoute();
 const router = useRouter();
@@ -77,6 +92,26 @@ const dateStr = computed(() => {
 
 const accentColor = computed(() => ISLANDS[island]?.theme?.accent ?? '#19c8b9');
 const bgColor = computed(() => ISLANDS[island]?.theme?.grassA ?? '#f8f8f0');
+
+const pausedVisible = ref(false);
+
+const audioRef = ref<AudioManager | null>(null);
+provide('audio', audioRef);
+
+onMounted(() => {
+  const audio = new AudioManager();
+  audio.loadBgm();
+  audio.loadAllSfx();
+  audio.playBgm();
+  if (settings.bgmVolume !== undefined) audio.setBgmVolume(settings.bgmVolume / 100);
+  if (settings.sfxVolume !== undefined) audio.setSfxVolume(settings.sfxVolume / 100);
+  audioRef.value = audio;
+});
+
+onBeforeUnmount(() => {
+  audioRef.value?.destroy();
+  audioRef.value = null;
+});
 
 function onDie(payload: {
   score: number;
@@ -111,7 +146,17 @@ function onEat(_payload: { foodKind: string; snakeLength: number }) {
 }
 
 function togglePause() {
-  canvasRef.value?.pause();
+  if (pausedVisible.value) {
+    resumeGame();
+  } else {
+    canvasRef.value?.pause();
+    pausedVisible.value = true;
+  }
+}
+
+function resumeGame() {
+  pausedVisible.value = false;
+  canvasRef.value?.resume();
 }
 
 function retry() {
@@ -122,6 +167,14 @@ function retry() {
 
 function goHome() {
   router.push({ name: 'home' });
+}
+
+function onDir(dir: Dir) {
+  canvasRef.value?.queueDirection(dir);
+}
+
+function onSwipe(dir: Dir) {
+  canvasRef.value?.queueDirection(dir);
 }
 </script>
 
@@ -140,5 +193,14 @@ function goHome() {
   align-items: center;
   justify-content: center;
   padding: 16px;
+}
+@media (max-width: 600px) {
+  .canvas-area { padding: 4px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .canvas-area {
+    max-height: 80vh;
+    padding: 4px;
+  }
 }
 </style>

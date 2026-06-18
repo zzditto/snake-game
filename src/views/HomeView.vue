@@ -149,4 +149,9 @@ function goSettings() {
   background: linear-gradient(180deg, transparent 0%, @bg-color 30%);
   border-top: 2px dashed @border-color-light;
 }
+@media (max-width: 600px) {
+  .title { font-size: 32px; }
+  .subtitle { font-size: 14px; }
+  .menu-buttons { width: 200px; }
+}
 </style>
