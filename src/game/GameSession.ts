@@ -182,7 +182,7 @@ export class GameSession {
   }
 
   private maybeSpeedUp(): void {
-    const totalEaten = this.state.score;
+    const totalEaten = this.state.comboCount;
     if (totalEaten > 0 && totalEaten % SPEED_UP_EVERY === 0) {
       const next = Math.max(
         SPEED_CAP_TICK_MS,
