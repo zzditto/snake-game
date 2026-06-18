@@ -53,7 +53,9 @@ const ISLAND_EMOJI: Record<IslandId, string> = {
 const islandList = computed(() =>
   ISLAND_ORDER.map((id) => {
     const island = ISLANDS[id];
-    const unlocked = island.unlockScore === 0 || progress.getHighScore('spring') >= island.unlockScore;
+    // 用所有岛屿最高分之和近似累计分数（阶段 3 改 progress.cumulativeScore）
+    const cum = ISLAND_ORDER.reduce((s, i) => s + progress.getHighScore(i), 0);
+    const unlocked = island.unlockScore === 0 || cum >= island.unlockScore;
     return {
       id,
       name: island.name,

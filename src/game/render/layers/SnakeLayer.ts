@@ -118,6 +118,7 @@ export function drawSnakeLayer(
     }
   }
 
+  // alpha 参数预留给未来位置插值，当前仅接收但未使用
   void alpha;
 }
 

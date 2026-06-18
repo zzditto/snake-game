@@ -23,6 +23,7 @@ interface FlashEffect {
   remainingMs: number;
 }
 
+// 模块级状态：当前设计为单 Renderer 实例（阶段 2 仅一个游戏画布）
 let particles: Particle[] = [];
 let shake: ScreenShake | null = null;
 let flash: FlashEffect | null = null;

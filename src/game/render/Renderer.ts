@@ -58,7 +58,11 @@ export class Renderer {
     const now = performance.now();
     const dt = this.lastFrameTime ? now - this.lastFrameTime : 16;
     this.lastFrameTime = now;
-    this.animTime += dt / 1000;
+    const dtSec = dt / 1000;
+    this.animTime += dtSec;
+    if (this.isDead) {
+      this.deathTime += dtSec;
+    }
 
     drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH, this.animTime);
     drawObstacleLayer(this.ctx('obstacle'), state.obstacles, this.cellW, this.cellH);
