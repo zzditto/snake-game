@@ -13,7 +13,9 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@types/howler": "^2.2.13",
     "animal-island-vue": "^0.2.1",
+    "howler": "^2.2.4",
     "html2canvas": "^1.4.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.0",
