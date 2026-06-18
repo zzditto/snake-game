@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { DifficultyId } from '@/game/types';
+import { TICK_MS_BY_DIFFICULTY } from '@/game/types';
 
 const STORAGE_KEY = 'snake-game.settings';
 
@@ -22,10 +23,7 @@ function save(state: SettingsState): void {
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsState => load(),
   getters: {
-    tickMs: (s) => {
-      const map: Record<DifficultyId, number> = { casual: 1000 / 4, normal: 1000 / 6, hard: 1000 / 10 };
-      return map[s.difficulty];
-    },
+    tickMs: (s) => TICK_MS_BY_DIFFICULTY[s.difficulty],
   },
   actions: {
     setDifficulty(d: DifficultyId) { this.difficulty = d; save(this.$state); },

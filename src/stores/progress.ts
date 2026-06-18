@@ -25,6 +25,9 @@ function save(state: ProgressState): void {
 
 export const useProgressStore = defineStore('progress', {
   state: (): ProgressState => load(),
+  getters: {
+    getHighScore: (s) => (island: IslandId): number => s.highScore[island] ?? 0,
+  },
   actions: {
     updateHighScore(island: IslandId, score: number): boolean {
       const prev = this.highScore[island] ?? 0;
@@ -34,9 +37,6 @@ export const useProgressStore = defineStore('progress', {
         return true;
       }
       return false;
-    },
-    getHighScore(island: IslandId): number {
-      return this.highScore[island] ?? 0;
     },
   },
 });
