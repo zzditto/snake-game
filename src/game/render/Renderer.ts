@@ -35,17 +35,21 @@ export class Renderer {
     const size = Math.min(containerW, this.boardSize * 64);
     this.cellW = size / this.boardSize;
     this.cellH = this.cellW;
+    for (const c of Object.values(this.canvases)) {
+      c.width = this.cellW * this.boardSize;
+      c.height = this.cellH * this.boardSize;
+    }
+    this.drawGrass();
   }
 
-  draw(state: GameState, alpha: number): void {
+  draw(state: GameState, _alpha: number): void {
     drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH);
     drawObstacleLayer(this.ctx('obstacle'), state.obstacles, this.cellW, this.cellH);
     drawSnakeLayer(
-      this.ctx('snake'), state.snake, this.cellW, this.cellH, alpha,
+      this.ctx('snake'), state.snake, this.cellW, this.cellH,
       this.theme.snakeHead, this.theme.snakeBodyEnd,
     );
     drawEffectsLayer(this.ctx('effects'));
-    void alpha;
   }
 
   private drawGrass(): void {

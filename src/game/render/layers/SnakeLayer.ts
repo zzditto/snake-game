@@ -5,7 +5,6 @@ export function drawSnakeLayer(
   snake: SnakeState,
   cellW: number,
   cellH: number,
-  alpha: number,
   colorHead: string,
   colorBody: string,
 ): void {
@@ -28,23 +27,25 @@ export function drawSnakeLayer(
     const head = snake.body[0]!;
     const cx = head.x * cellW + cellW / 2;
     const cy = head.y * cellH + cellH / 2;
+    const eyeOffset = Math.round(cellW * 0.15);
+    const eyeY = cy - Math.round(cellH * 0.1);
+    const eyeR = Math.max(2, Math.round(cellW * 0.08));
+    const pupilR = Math.max(1, Math.round(eyeR * 0.5));
     ctx.fillStyle = '#fff';
     ctx.beginPath();
-    ctx.arc(cx - 4, cy - 3, 3, 0, Math.PI * 2);
+    ctx.arc(cx - eyeOffset, eyeY, eyeR, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(cx + 4, cy - 3, 3, 0, Math.PI * 2);
+    ctx.arc(cx + eyeOffset, eyeY, eyeR, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#333';
     ctx.beginPath();
-    ctx.arc(cx - 3, cy - 3, 1.5, 0, Math.PI * 2);
+    ctx.arc(cx - eyeOffset + 1, eyeY, pupilR, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(cx + 5, cy - 3, 1.5, 0, Math.PI * 2);
+    ctx.arc(cx + eyeOffset + 1, eyeY, pupilR, 0, Math.PI * 2);
     ctx.fill();
   }
-
-  void alpha;
 }
 
 function roundRect(
