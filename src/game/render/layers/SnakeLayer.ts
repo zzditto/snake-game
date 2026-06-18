@@ -47,7 +47,7 @@ export function drawSnakeLayer(
     const color = i === 0 ? headColor : lerpColor(startRGB, endRGB, t);
 
     const pad = 2;
-    let x = seg.x * cellW + pad;
+    const x = seg.x * cellW + pad;
     let y = seg.y * cellH + pad;
     const w = cellW - pad * 2;
     const h = cellH - pad * 2;
@@ -125,7 +125,7 @@ function drawEars(
   ctx: CanvasRenderingContext2D,
   cx: number, cy: number,
   cellW: number, cellH: number,
-  vec: { dx: number; dy: number },
+  _vec: { dx: number; dy: number },
 ): void {
   const earSize = cellW * 0.2;
   const earY = cy - cellH * 0.32;

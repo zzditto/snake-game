@@ -67,8 +67,8 @@ function drawDecorations(
   boardSize: number,
   cellW: number,
   cellH: number,
-  w: number,
-  h: number,
+  _w: number,
+  _h: number,
 ): void {
   const count = Math.floor(deco.density * boardSize * boardSize);
   const size = cellW * 2.5;

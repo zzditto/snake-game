@@ -1,6 +1,8 @@
 <template>
   <main class="settings">
-    <h2 class="settings-title">设置</h2>
+    <h2 class="settings-title">
+      设置
+    </h2>
 
     <section class="settings-group">
       <h3>难度</h3>
@@ -21,17 +23,34 @@
       <h3>音量</h3>
       <div class="slider-row">
         <label>BGM</label>
-        <input v-model.number="bgmVolume" type="range" min="0" max="100" class="slider">
+        <input
+          v-model.number="bgmVolume"
+          type="range"
+          min="0"
+          max="100"
+          class="slider"
+        >
         <span class="slider-val">{{ bgmVolume }}</span>
       </div>
       <div class="slider-row">
         <label>SFX</label>
-        <input v-model.number="sfxVolume" type="range" min="0" max="100" class="slider">
+        <input
+          v-model.number="sfxVolume"
+          type="range"
+          min="0"
+          max="100"
+          class="slider"
+        >
         <span class="slider-val">{{ sfxVolume }}</span>
       </div>
     </section>
 
-    <button class="back-btn" @click="goBack">返回主菜单</button>
+    <button
+      class="back-btn"
+      @click="goBack"
+    >
+      返回主菜单
+    </button>
   </main>
 </template>
 

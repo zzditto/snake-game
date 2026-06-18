@@ -1,6 +1,8 @@
 <template>
   <div class="island-picker">
-    <h3 class="picker-label">选择岛屿</h3>
+    <h3 class="picker-label">
+      选择岛屿
+    </h3>
     <div class="island-cards">
       <button
         v-for="island in islandList"
@@ -10,10 +12,24 @@
         :disabled="!island.unlocked"
         @click="select(island.id)"
       >
-        <div class="card-icon">{{ island.emoji }}</div>
-        <div class="card-name">{{ island.name }}</div>
-        <div v-if="!island.unlocked" class="card-lock">🔒</div>
-        <div v-if="!island.unlocked" class="card-hint">{{ island.hint }}</div>
+        <div class="card-icon">
+          {{ island.emoji }}
+        </div>
+        <div class="card-name">
+          {{ island.name }}
+        </div>
+        <div
+          v-if="!island.unlocked"
+          class="card-lock"
+        >
+          🔒
+        </div>
+        <div
+          v-if="!island.unlocked"
+          class="card-hint"
+        >
+          {{ island.hint }}
+        </div>
       </button>
     </div>
   </div>

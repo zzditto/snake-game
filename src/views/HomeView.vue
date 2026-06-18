@@ -1,19 +1,38 @@
 <template>
   <main class="home">
     <div class="title-area">
-      <h1 class="title">动森贪吃蛇</h1>
-      <p class="subtitle">在无人岛上收集水果吧</p>
+      <h1 class="title">
+        动森贪吃蛇
+      </h1>
+      <p class="subtitle">
+        在无人岛上收集水果吧
+      </p>
     </div>
 
     <IslandPicker v-model:model="selectedIsland" />
 
     <div class="menu-buttons">
-      <button class="btn-primary btn-free" @click="startFree">自由散步</button>
-      <button class="btn-primary btn-daily" @click="startDaily">今日挑战</button>
+      <button
+        class="btn-primary btn-free"
+        @click="startFree"
+      >
+        自由散步
+      </button>
+      <button
+        class="btn-primary btn-daily"
+        @click="startDaily"
+      >
+        今日挑战
+      </button>
     </div>
 
     <div class="footer-links">
-      <button class="link-btn" @click="goSettings">设置</button>
+      <button
+        class="link-btn"
+        @click="goSettings"
+      >
+        设置
+      </button>
     </div>
 
     <div class="home-footer" />
