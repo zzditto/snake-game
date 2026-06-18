@@ -8,6 +8,7 @@
       @pause="togglePause"
     />
     <div class="canvas-area">
+      <SwipeArea @swipe="onSwipe" />
       <GameCanvas
         ref="canvasRef"
         :island="island"
@@ -18,6 +19,7 @@
         @score-change="(v) => score = v"
       />
     </div>
+    <DPad @dir="onDir" @pause="togglePause" />
     <PauseModal
       :visible="pausedVisible"
       @resume="resumeGame"
@@ -47,9 +49,11 @@ import GameCanvas from '@/components/GameCanvas.vue';
 import GameHUD from '@/components/GameHUD.vue';
 import GameOverModal from '@/components/GameOverModal.vue';
 import PauseModal from '@/components/PauseModal.vue';
+import DPad from '@/components/DPad.vue';
+import SwipeArea from '@/components/SwipeArea.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useProgressStore } from '@/stores/progress';
-import type { IslandId, ModeId, AchievementId, TitleId } from '@/game/types';
+import type { IslandId, ModeId, AchievementId, TitleId, Dir } from '@/game/types';
 import { ACHIEVEMENT_NAMES, TITLE_NAMES } from '@/game/types';
 import { ISLANDS } from '@/game/levels/islands';
 import { AudioManager } from '@/game/audio/AudioManager';
@@ -160,6 +164,14 @@ function retry() {
 
 function goHome() {
   router.push({ name: 'home' });
+}
+
+function onDir(dir: Dir) {
+  canvasRef.value?.queueDirection(dir);
+}
+
+function onSwipe(dir: Dir) {
+  canvasRef.value?.queueDirection(dir);
 }
 </script>
 

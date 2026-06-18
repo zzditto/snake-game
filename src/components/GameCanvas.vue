@@ -150,6 +150,7 @@ function reset(): void {
 
 function pause(): void { session?.pause(); }
 function resume(): void { session?.resume(); }
+function queueDirection(dir: Dir): void { session?.queueDirection(dir); }
 
 watch(() => session?.state.score, (v) => { if (v !== undefined) emit('scoreChange', v); });
 
@@ -159,7 +160,7 @@ onBeforeUnmount(() => {
   inputCtrl?.detach();
 });
 
-defineExpose({ reset, pause, resume });
+defineExpose({ reset, pause, resume, queueDirection });
 </script>
 
 <style lang="less" scoped>
