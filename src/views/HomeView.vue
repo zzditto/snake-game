@@ -1,12 +1,26 @@
 <template>
   <main class="home">
     <div class="title-area">
-      <h1 class="title">动森贪吃蛇</h1>
-      <p class="subtitle">在无人岛上收集水果吧</p>
+      <h1 class="title">
+        动森贪吃蛇
+      </h1>
+      <p class="subtitle">
+        在无人岛上收集水果吧
+      </p>
     </div>
     <div class="menu-buttons">
-      <button class="btn-primary" @click="startFree">自由散步</button>
-      <button class="btn-primary" @click="startDaily">今日挑战</button>
+      <button
+        class="btn-primary"
+        @click="startFree"
+      >
+        自由散步
+      </button>
+      <button
+        class="btn-primary"
+        @click="startDaily"
+      >
+        今日挑战
+      </button>
     </div>
   </main>
 </template>

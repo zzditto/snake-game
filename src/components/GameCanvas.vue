@@ -1,5 +1,8 @@
 <template>
-  <div ref="containerRef" class="game-canvas"></div>
+  <div
+    ref="containerRef"
+    class="game-canvas"
+  />
 </template>
 
 <script setup lang="ts">

@@ -12,7 +12,12 @@
       <span class="hud-label">岛屿</span>
       <span class="hud-value">{{ islandName }}</span>
     </div>
-    <button class="hud-pause" @click="$emit('pause')">暂停</button>
+    <button
+      class="hud-pause"
+      @click="$emit('pause')"
+    >
+      暂停
+    </button>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 import type {
-  Cell, Dir, Food, GameMode, GameState, Island,
+  Cell, Dir, GameMode, GameState, Island,
   DifficultyId, SnakeState,
 } from '@/game/types';
 import {

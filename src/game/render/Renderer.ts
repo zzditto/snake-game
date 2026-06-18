@@ -1,5 +1,4 @@
 import type { GameState, ThemeTokens } from '@/game/types';
-import { BOARD_SIZE } from '@/game/types';
 import { drawGrassLayer } from '@/game/render/layers/GrassLayer';
 import { drawFoodLayer } from '@/game/render/layers/FoodLayer';
 import { drawSnakeLayer } from '@/game/render/layers/SnakeLayer';

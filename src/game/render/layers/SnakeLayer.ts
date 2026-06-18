@@ -1,4 +1,4 @@
-import type { Cell, SnakeState } from '@/game/types';
+import type { SnakeState } from '@/game/types';
 
 export function drawSnakeLayer(
   ctx: CanvasRenderingContext2D,
