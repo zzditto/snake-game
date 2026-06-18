@@ -1,4 +1,4 @@
-import type { GameState, ThemeTokens } from '@/game/types';
+import type { DecorationDef, GameState, ThemeTokens } from '@/game/types';
 import { drawGrassLayer } from '@/game/render/layers/GrassLayer';
 import { drawFoodLayer } from '@/game/render/layers/FoodLayer';
 import { drawSnakeLayer, type SnakeLayerOptions } from '@/game/render/layers/SnakeLayer';
@@ -12,11 +12,13 @@ export class Renderer {
   private cellH = 0;
   private boardSize: number;
   private theme: ThemeTokens;
+  private decorations: DecorationDef[];
   private snakeDeathStart: number | null = null;
 
-  constructor(container: HTMLElement, boardSize: number, theme: ThemeTokens) {
+  constructor(container: HTMLElement, boardSize: number, theme: ThemeTokens, decorations: DecorationDef[] = []) {
     this.boardSize = boardSize;
     this.theme = theme;
+    this.decorations = decorations;
     this.cellW = Math.min(container.clientWidth, boardSize * 64) / boardSize;
     this.cellH = this.cellW;
     for (const name of ['grass', 'food', 'obstacle', 'snake', 'effects'] as const) {
@@ -72,7 +74,7 @@ export class Renderer {
   }
 
   private drawGrass(): void {
-    drawGrassLayer(this.ctx('grass'), this.cellW, this.cellH, this.boardSize, this.theme);
+    drawGrassLayer(this.ctx('grass'), this.cellW, this.cellH, this.boardSize, this.theme, this.decorations);
   }
 
   private ctx(name: string): CanvasRenderingContext2D {

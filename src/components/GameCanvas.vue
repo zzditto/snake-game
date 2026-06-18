@@ -56,7 +56,7 @@ function initGame(): void {
   });
 
   if (!renderer) {
-    renderer = new Renderer(container, BOARD_SIZE, island.theme);
+    renderer = new Renderer(container, BOARD_SIZE, island.theme, island.decorations);
   }
 
   session.onRender((_alpha, state) => {
