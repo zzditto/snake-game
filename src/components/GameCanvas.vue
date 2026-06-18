@@ -78,6 +78,7 @@ function initGame(): void {
     onUnlockTitle: (id: TitleId) => {
       if (progress.addTitle(id)) newTitles.push(id);
     },
+    onAutoPause: () => { audioRef?.value?.playSfx('pause'); },
   });
 
   if (!renderer) {

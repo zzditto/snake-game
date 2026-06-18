@@ -6,6 +6,8 @@ export interface GameLoopOptions {
   raf?: (cb: (now: number) => void) => number;
   cancelRaf?: (handle: number) => void;
   now?: () => number;
+  /** 页面失焦自动暂停时的回调 */
+  onAutoPause?: () => void;
 }
 
 export class GameLoop {
@@ -15,12 +17,14 @@ export class GameLoop {
   private raf: (cb: (now: number) => void) => number;
   private cancelRaf: (h: number) => void;
   private now: () => number;
+  private onAutoPause?: () => void;
 
   private acc = 0;
   private lastT = 0;
   private rafHandle: number | null = null;
   private state: 'idle' | 'running' | 'paused' | 'stopped' = 'idle';
   private virtualNow = 0;
+  private visibilityHandler: (() => void) | null = null;
 
   constructor(opts: GameLoopOptions) {
     this.tickMs = opts.tickMs;
@@ -29,6 +33,7 @@ export class GameLoop {
     this.raf = opts.raf ?? ((cb) => requestAnimationFrame(cb));
     this.cancelRaf = opts.cancelRaf ?? ((h) => cancelAnimationFrame(h));
     this.now = opts.now ?? (() => performance.now());
+    this.onAutoPause = opts.onAutoPause;
   }
 
   setTickMs(ms: number): void {
@@ -53,6 +58,7 @@ export class GameLoop {
     this.lastT = this.now();
     this.acc = 0;
     this.virtualNow = 0;
+    this.setupVisibilityPause();
     this.scheduleFrame();
   }
 
@@ -79,6 +85,7 @@ export class GameLoop {
       this.cancelRaf(this.rafHandle);
       this.rafHandle = null;
     }
+    this.removeVisibilityPause();
   }
 
   /** 测试专用：手动推进虚拟时间。 */
@@ -86,6 +93,25 @@ export class GameLoop {
     if (this.state !== 'running') return;
     this.virtualNow += deltaMs;
     this.frame(this.lastT + this.virtualNow);
+  }
+
+  private setupVisibilityPause(): void {
+    this.visibilityHandler = () => {
+      if (document.hidden && this.state === 'running') {
+        this.pause();
+        this.onAutoPause?.();
+      }
+    };
+    document.addEventListener('visibilitychange', this.visibilityHandler);
+    window.addEventListener('pagehide', this.visibilityHandler);
+  }
+
+  private removeVisibilityPause(): void {
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+      window.removeEventListener('pagehide', this.visibilityHandler);
+      this.visibilityHandler = null;
+    }
   }
 
   private scheduleFrame(): void {
