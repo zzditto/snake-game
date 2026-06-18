@@ -56,7 +56,7 @@ export class Renderer {
       ? (now - this.snakeDeathStart) / 1000
       : 0;
 
-    drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH);
+    drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH, animTime);
     drawObstacleLayer(this.ctx('obstacle'), state.obstacles, this.cellW, this.cellH);
     drawSnakeLayer(
       this.ctx('snake'), state.snake, this.cellW, this.cellH,
