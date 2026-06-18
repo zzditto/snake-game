@@ -21,7 +21,6 @@ function drawTreeStump(
   x: number, y: number,
   cellW: number, cellH: number,
 ): void {
-  const pad = cellW * 0.08;
   const cx = x + cellW / 2;
   const cy = y + cellH / 2;
   const r = Math.min(cellW, cellH) * 0.35;

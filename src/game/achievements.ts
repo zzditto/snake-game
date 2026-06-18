@@ -1,4 +1,4 @@
-import type { AchievementId, FoodKind, IslandId, GameState } from '@/game/types';
+import type { AchievementId, FoodKind, GameState } from '@/game/types';
 import { FOSSIL_KINDS } from '@/game/types';
 
 export interface AchievementCheckInput {

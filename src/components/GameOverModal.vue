@@ -1,18 +1,38 @@
 <template>
-  <div v-if="visible" class="overlay">
+  <div
+    v-if="visible"
+    class="overlay"
+  >
     <div class="modal">
       <h2>游戏结束</h2>
       <div class="stats">
         <p><strong>{{ score }}</strong> 分</p>
         <p>长度 {{ length }} 节</p>
-        <p v-if="isNewHighScore" class="new-record">新纪录!</p>
+        <p
+          v-if="isNewHighScore"
+          class="new-record"
+        >
+          新纪录!
+        </p>
       </div>
 
-      <div v-if="newUnlocks.length > 0" class="unlocks">
-        <p v-for="item in newUnlocks" :key="item" class="unlock-item">✨ {{ item }}</p>
+      <div
+        v-if="newUnlocks.length > 0"
+        class="unlocks"
+      >
+        <p
+          v-for="item in newUnlocks"
+          :key="item"
+          class="unlock-item"
+        >
+          ✨ {{ item }}
+        </p>
       </div>
 
-      <div v-if="isDaily" class="share-section">
+      <div
+        v-if="isDaily"
+        class="share-section"
+      >
         <DailyShareCard
           ref="shareCardRef"
           :date-str="dateStr"
@@ -22,12 +42,24 @@
           :accent-color="accentColor"
           :bg-color="bgColor"
         />
-        <button class="save-btn" @click="saveImage">保存图片</button>
+        <button
+          class="save-btn"
+          @click="saveImage"
+        >
+          保存图片
+        </button>
       </div>
 
       <div class="actions">
-        <button @click="$emit('retry')">再来一局</button>
-        <button class="secondary" @click="$emit('home')">返回主菜单</button>
+        <button @click="$emit('retry')">
+          再来一局
+        </button>
+        <button
+          class="secondary"
+          @click="$emit('home')"
+        >
+          返回主菜单
+        </button>
       </div>
     </div>
   </div>

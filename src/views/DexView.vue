@@ -1,6 +1,8 @@
 <template>
   <main class="dex-view">
-    <h2 class="dex-title">图鉴</h2>
+    <h2 class="dex-title">
+      图鉴
+    </h2>
 
     <div class="tabs">
       <button
@@ -27,12 +29,27 @@
     <div class="dex-footer">
       <span>已解锁 {{ unlockedCount }} / {{ totalCount }}</span>
       <div class="footer-actions">
-        <button class="btn-small" @click="exportData">导出存档</button>
-        <button class="btn-small" @click="importData">导入存档</button>
+        <button
+          class="btn-small"
+          @click="exportData"
+        >
+          导出存档
+        </button>
+        <button
+          class="btn-small"
+          @click="importData"
+        >
+          导入存档
+        </button>
       </div>
     </div>
 
-    <button class="back-btn" @click="goBack">返回主菜单</button>
+    <button
+      class="back-btn"
+      @click="goBack"
+    >
+      返回主菜单
+    </button>
   </main>
 </template>
 
@@ -82,6 +99,8 @@ const currentItems = computed(() => {
         id, name: TITLE_NAMES[id], icon: '🏅',
         unlocked: progress.dex.titles.includes(id),
       }));
+    default:
+      return [];
   }
 });
 

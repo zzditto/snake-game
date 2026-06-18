@@ -1,11 +1,27 @@
 <template>
-  <div ref="cardRef" class="share-card" :style="cardStyle">
-    <div class="share-header">今日挑战</div>
-    <div class="share-date">{{ dateStr }}</div>
-    <div class="share-island">{{ islandName }}</div>
-    <div class="share-score">{{ score }} 分</div>
-    <div class="share-length">长度 {{ length }} 节</div>
-    <div class="share-footer">🕹️ 动森贪吃蛇</div>
+  <div
+    ref="cardRef"
+    class="share-card"
+    :style="cardStyle"
+  >
+    <div class="share-header">
+      今日挑战
+    </div>
+    <div class="share-date">
+      {{ dateStr }}
+    </div>
+    <div class="share-island">
+      {{ islandName }}
+    </div>
+    <div class="share-score">
+      {{ score }} 分
+    </div>
+    <div class="share-length">
+      长度 {{ length }} 节
+    </div>
+    <div class="share-footer">
+      🕹️ 动森贪吃蛇
+    </div>
   </div>
 </template>
 

@@ -1,7 +1,14 @@
 <template>
-  <div class="dex-card" :class="{ locked: !unlocked }">
-    <div class="card-icon">{{ unlocked ? icon : '❓' }}</div>
-    <div class="card-name">{{ unlocked ? name : '???' }}</div>
+  <div
+    class="dex-card"
+    :class="{ locked: !unlocked }"
+  >
+    <div class="card-icon">
+      {{ unlocked ? icon : '❓' }}
+    </div>
+    <div class="card-name">
+      {{ unlocked ? name : '???' }}
+    </div>
   </div>
 </template>
 

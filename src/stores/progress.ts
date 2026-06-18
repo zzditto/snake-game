@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type { IslandId, FoodKind, TitleId, AchievementId, DailyRecord } from '@/game/types';
-import { FOSSIL_KINDS } from '@/game/types';
+
 import { ISLANDS, ISLAND_ORDER } from '@/game/levels/islands';
 
 const STORAGE_KEY = 'snake-game.progress';
