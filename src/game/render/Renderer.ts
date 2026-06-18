@@ -1,8 +1,8 @@
 import type { DecorationDef, GameState, ThemeTokens } from '@/game/types';
 import { drawGrassLayer } from '@/game/render/layers/GrassLayer';
 import { drawFoodLayer } from '@/game/render/layers/FoodLayer';
-import { drawSnakeLayer, type SnakeLayerOptions } from '@/game/render/layers/SnakeLayer';
-import { drawEffectsLayer } from '@/game/render/layers/EffectsLayer';
+import { drawSnakeLayer } from '@/game/render/layers/SnakeLayer';
+import { drawEffectsLayer, spawnEatParticles, triggerScreenShake, clearEffects } from '@/game/render/layers/EffectsLayer';
 import { drawObstacleLayer } from '@/game/render/layers/ObstacleLayer';
 
 export class Renderer {
@@ -13,9 +13,18 @@ export class Renderer {
   private boardSize: number;
   private theme: ThemeTokens;
   private decorations: DecorationDef[];
-  private snakeDeathStart: number | null = null;
+  private animTime = 0;
+  private lastFrameTime = 0;
+  private isDead = false;
+  private deathTime = 0;
+  public hasTriggeredDeath = false;
 
-  constructor(container: HTMLElement, boardSize: number, theme: ThemeTokens, decorations: DecorationDef[] = []) {
+  constructor(
+    container: HTMLElement,
+    boardSize: number,
+    theme: ThemeTokens,
+    decorations: DecorationDef[],
+  ) {
     this.boardSize = boardSize;
     this.theme = theme;
     this.decorations = decorations;
@@ -46,35 +55,46 @@ export class Renderer {
   }
 
   draw(state: GameState, alpha: number): void {
-    const now = Date.now();
-    const animTime = (now - state.startedAt) / 1000;
+    const now = performance.now();
+    const dt = this.lastFrameTime ? now - this.lastFrameTime : 16;
+    this.lastFrameTime = now;
+    this.animTime += dt / 1000;
 
-    if (!state.snake.alive && this.snakeDeathStart === null) {
-      this.snakeDeathStart = now;
-    } else if (state.snake.alive) {
-      this.snakeDeathStart = null;
-    }
-    const deathTime = this.snakeDeathStart !== null
-      ? (now - this.snakeDeathStart) / 1000
-      : 0;
-
-    drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH, animTime);
+    drawFoodLayer(this.ctx('food'), state.foods, this.cellW, this.cellH, this.animTime);
     drawObstacleLayer(this.ctx('obstacle'), state.obstacles, this.cellW, this.cellH);
-    drawSnakeLayer(
-      this.ctx('snake'), state.snake, this.cellW, this.cellH,
-      {
-        alpha,
-        animTime,
-        isDead: !state.snake.alive,
-        deathTime,
-        theme: this.theme,
-      } satisfies SnakeLayerOptions,
-    );
-    drawEffectsLayer(this.ctx('effects'));
+    drawSnakeLayer(this.ctx('snake'), state.snake, this.cellW, this.cellH, {
+      alpha,
+      animTime: this.animTime,
+      isDead: this.isDead,
+      deathTime: this.deathTime,
+      theme: this.theme,
+    });
+    drawEffectsLayer(this.ctx('effects'), dt);
+  }
+
+  triggerDeath(): void {
+    this.isDead = true;
+    this.deathTime = 0;
+    triggerScreenShake(6, 400);
+  }
+
+  triggerEatParticles(gridX: number, gridY: number, _foodKind: string): void {
+    spawnEatParticles(gridX, gridY, this.cellW, this.cellH, _foodKind);
+  }
+
+  resetAnimation(): void {
+    this.isDead = false;
+    this.deathTime = 0;
+    this.animTime = 0;
+    this.hasTriggeredDeath = false;
+    clearEffects();
   }
 
   private drawGrass(): void {
-    drawGrassLayer(this.ctx('grass'), this.cellW, this.cellH, this.boardSize, this.theme, this.decorations);
+    drawGrassLayer(
+      this.ctx('grass'), this.cellW, this.cellH, this.boardSize,
+      this.theme, this.decorations,
+    );
   }
 
   private ctx(name: string): CanvasRenderingContext2D {

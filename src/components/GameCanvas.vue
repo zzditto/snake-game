@@ -59,11 +59,22 @@ function initGame(): void {
     renderer = new Renderer(container, BOARD_SIZE, island.theme, island.decorations);
   }
 
-  session.onRender((_alpha, state) => {
-    renderer?.draw(state, _alpha);
+  session.onRender((alpha, state) => {
+    if (!state.snake.alive && !renderer!.hasTriggeredDeath) {
+      renderer!.triggerDeath();
+      renderer!.hasTriggeredDeath = true;
+    }
+    renderer!.draw(state, alpha);
   });
 
-  session.bus.on('eat', (p) => emit('eat', { foodKind: p.food.kind, snakeLength: p.snakeLength }));
+  session.bus.on('eat', (p) => {
+    const state = session!.state;
+    const food = state.foods.find(f =>
+      f.cell.x === state.snake.body[0]!.x && f.cell.y === state.snake.body[0]!.y
+    ) ?? p.food;
+    renderer?.triggerEatParticles(food.cell.x, food.cell.y, p.food.kind);
+    emit('eat', { foodKind: p.food.kind, snakeLength: p.snakeLength });
+  });
   session.bus.on('die', (p) => emit('die', p));
 
   inputCtrl = new InputController({
@@ -86,6 +97,7 @@ onMounted(() => { initGame(); });
 function reset(): void {
   session?.destroy();
   inputCtrl?.detach();
+  renderer?.resetAnimation();
   initGame();
 }
 
