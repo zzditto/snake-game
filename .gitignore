@@ -9,3 +9,7 @@ dist/
 coverage/
 .playwright-cli/
 .worktrees/
+
+# AI generated images
+storm-landscape.png
+generated-images/
