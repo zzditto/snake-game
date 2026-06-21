@@ -17,7 +17,9 @@
     "animal-island-vue": "^0.2.1",
     "howler": "^2.2.4",
     "html2canvas": "^1.4.1",
+    "imagetracerjs": "^1.2.6",
     "pinia": "^2.1.7",
+    "pngjs": "^7.0.0",
     "vue": "^3.4.0",
     "vue-router": "^4.2.5"
   },
@@ -36,5 +38,22 @@
     "vite": "^5.0.0",
     "vitest": "^1.1.0",
     "vue-tsc": "^2.2.12"
-  }
+  },
+  "description": "一款基于 Web、单机运行、采用《集合啦！动物森友会》视觉风格的贪吃蛇游戏。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zzditto/snake-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zzditto/snake-game/issues"
+  },
+  "homepage": "https://github.com/zzditto/snake-game#readme"
 }
